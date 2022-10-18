@@ -1,7 +1,16 @@
-const { response } = require("express");
 const express = require("express");
+const mysql = require("mysql"); // mysql을 가져와서 사용하겠다. 
 
 const router = express.Router(); // express가 가진 기능 중 router를 사용하겠다 선언
+
+let conn = mysql.createConnection({   // 이코드가 실행되는 순간 DB로 감 
+    // -> 아래 정보를 보고 승인되면 conn이라는 변수를 쓰면 mysql 쓸 수 있음 
+    host : "127.0.0.1",
+    user : "root",
+    password : "gjaischool",
+    port : "3306",   // 기본적으로 이 번호로 설정됨
+    database : "nodejs_db"
+})
 
 router.get("/plus", function(request, response){ // /plus 라우터 기능정의 및 등록
     console.log("/plus 라우터 호출")
@@ -84,5 +93,100 @@ router.post("/Grade", (request, response) => {
 
 })
 
+
+// ex04.join
+router.post("/join", (request, response) => {
+
+    response.writeHead(200, {"Content-Type" : "text/html;charset=utf-8"})
+    response.write("<html>");
+    response.write("<body>");
+
+    response.write("ID : " + (request.body.id) + "<br>");
+    response.write("NAME : " + (request.body.name) + "<br>");
+    response.write("EMAIL : " + (request.body.email) + "<br>");
+    response.write("TEL : " + (request.body.tel) + "<br>");
+    response.write("GENDER : " + (request.body.gender) + "<br>");
+    response.write("COUNTRY : " + (request.body.country) + "<br>");
+    response.write("BIRTH : " + (request.body.birth) + "<br>");
+    response.write("COLOR : " + (request.body.color) + "<br>");
+    response.write("HOBBY : " + (request.body.hobby) + "<br>");
+    response.write("TALK : " + (request.body.talk) + "<br>");
+
+    response.write("</body>");
+    response.write("</html>");
+    response.end();
+
+})
+
+
+// ex05.Login
+router.post("/Login", (request, response) => {
+
+    let id = request.body.id;
+    let pw = request.body.pw;
+
+    // response.redirect => 이미 만들어진 페이지로 이동시켜줌 
+    //response.redirect("http://127.0.0.1:5500/mynodejs_/public/ex05LoginS.html");  // 성공한 페이지 주소 붙여넣기
+
+    // 사용자가 입력한 id가 'smart'이고, pw가 '123'이었을 때 
+    // 성공 -> LoginS.html
+    // 실패 -> LoginF.html
+    // 조건문 활용
+    if (id == "smart" && pw =="123") {
+        response.redirect("http://127.0.0.1:5500/mynodejs_/public/ex05LoginS.html");
+    } else {
+        response.redirect("http://127.0.0.1:5500/mynodejs_/public/ex05LoginF.html");
+    }
+});
+
+// ex06 Join
+
+router.post("/JoinDB", (request, response) => {
+
+    let id = request.body.id;
+    let pw = request.body.pw;
+    let nick = request.body.nick;
+
+    let sql = "insert into member values(?, ?, ?)";
+    // 사용자가 입력한 값 넣으려면 ?를 넣어준다. 
+    // 물음표 순서대로 변수를 아래 대괄호에 작성해준다.
+    conn.query(sql, [id, pw, nick], (err, row) => {  // 어떤 sql문을 db에 날릴 건지 / 실패 혹은 성공했을 때 어떤걸 보여줄건지
+        if(!err){ // err에 아무런 값이 없다면? (성공일 때)
+            console.log("입력성공 : " + row);
+            response.redirect("http://127.0.0.1:5500/mynodejs_/public/ex06Main.html"); 
+            // 입력성공 후 사용자는 메인페이지로 보내줌
+        } else {
+            console.log("입력실패 : " + err);
+        }
+
+    })
+
+
+});
+
+
+// 회원삭제라우터만들기
+// 1. get방식의 /Delete라우터 생성
+// 2. 사용자가 입력한 id값 가져오기
+// 3. id값을 통해 member테이블에 있는 id값 삭제하기
+// 4. 삭제 성공 후 Main.html로 돌아가기 
+router.get("/Delete", (request, response) => {
+    
+    let id = request.query.id;
+
+    let sql = "DELETE FROM member where id = ?";
+
+    conn.query(sql, [id], (err, row) => {
+        if (row.affectedRows > 0){     // 삭제한 값이 1이상 일 때 (올바른 id값을 넣어서 삭제가 된 경우)
+            console.log("명령에 성공한 횟수 : " + row.affectedRows);   // affectedRows : 명령에 성공한 횟수를 나타냄
+            response.redirect("http://127.0.0.1:5500/mynodejs_/public/ex06Main.html");
+        } else if (row.affectedRows == 0) { // 올바른 id값을 넣지 않아서 삭제가 되지 않은 경우
+            console.log("삭제된 값이 없습니다.")
+        } else {            // 그냥 안된 경우
+            console.log("삭제실패 : " + err);
+        }
+    })
+
+});
 // 현재 선언된 router를 외부에서 사용할 수 있게 선언해주는 것 
 module.exports = router;
