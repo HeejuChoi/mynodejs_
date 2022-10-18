@@ -1,3 +1,10 @@
+#HJ
+*.ps1
+*.cmd
+# HJ
+package.json
+package-lock.json
+
 # Logs
 logs
 *.log
