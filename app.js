@@ -9,12 +9,21 @@ const router = require("./router/router.js");
 // 가지고 오는 부분이 있고 미들웨어를 선언하는 부분이 있음 
 const bodyparser = require("body-parser");
 
+let ejs = require('ejs');
+const DBrouter = require("./router/DBrouter.js");
+const EJSrouter = require("./router/EJSrouter.js")
+
+app.set('view engine', 'ejs');
+// set : 이미 nodejs에 있는 속성 중 하나 / use : 있는걸 갖다 쓰겠다? 
+
 // body-parser가 가진 내장된 설정은 잘 사용하지 않아서 
 // post방식일 때 body 영역을 분석해주는 미들웨어로 bodyparser 등록 
 // 밑에 router 등록하기 전에 이거 먼저 등록해야함 
 app.use(bodyparser.urlencoded({extended:false}));
 
 app.use(router); // 미들웨어로 router 등록 / 등록을 해줘야 쓸 수 있음 
+app.use(DBrouter);
+app.use(EJSrouter);
 
 app.listen(3000); // 현재 서버파일의 포트 번호 설정 
 
