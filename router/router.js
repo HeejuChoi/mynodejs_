@@ -120,7 +120,11 @@ router.post("/join", (request, response) => {
 })
 
 
+router.get('/Message', (request, response) => {
 
+    response.render("message", {});
+
+})
 
 
 

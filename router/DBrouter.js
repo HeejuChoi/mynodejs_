@@ -58,7 +58,13 @@ DBrouter.post("/Login", (request, response) => {
         if(err) {
             console.log("검색실패 : " + err);
 
-        } else if (row.length > 0) {   // DB에 있는 row에 값이 있다면 출력해라  
+        } else if (row.length > 0) {   // DB에 있는 row에 값이 있다면 출력해라
+            
+            // 로그인에 성공하면 session에 id값을 저장해라 
+            request.session.user = id;
+
+            console.log("session영역에 id저장 성공" + request.session.user);
+            
             // 검색된 데이터가 있음 -> 로그인 성공
             response.render("LoginS", {
                 id_name : row
@@ -87,7 +93,7 @@ DBrouter.post("/JoinDB", (request, response) => {
     conn.query(sql, [id, pw, nick], (err, row) => {  // 어떤 sql문을 db에 날릴 건지 / 실패 혹은 성공했을 때 어떤걸 보여줄건지
         if(!err){ // err에 아무런 값이 없다면? (성공일 때)
             console.log("입력성공 : " + row);
-            response.redirect("http://127.0.0.1:5500/mynodejs_/public/ex06Main.html"); 
+            response.redirect("http://127.0.0.1:3000/Main"); 
             // 입력성공 후 사용자는 메인페이지로 보내줌
         } else {
             console.log("입력실패 : " + err);
@@ -130,7 +136,7 @@ DBrouter.get("/Delete", (request, response) => {
                 
             } else if (row.affectedRows > 0) {
                 console.log("명령에 성공한 횟수 : " + row.affectedRows); 
-                response.redirect("http://127.0.0.1:5500/mynodejs_/public/ex06Main.html");
+                response.redirect("http://127.0.0.1:3000/Main");
                 
             } else if  (row.affectedRows == 0) {           
                 console.log("삭제된 값이 없습니다.")
@@ -183,7 +189,7 @@ DBrouter.post("/Update", (request, response) => {
                 
             } else if (row.affectedRows > 0) {
                 console.log("명령에 성공한 횟수 : " + row.affectedRows); 
-                response.redirect("http://127.0.0.1:5500/mynodejs_/public/ex06Main.html");
+                response.redirect("http://127.0.0.1:3000/Main");
                 
             } else if  (row.affectedRows == 0) {           
                 console.log("수정된 값이 없습니다.")
@@ -345,5 +351,23 @@ DBrouter.get("/SelectDelete", (request, response) => {
 
 });
 
+// Main
+DBrouter.get("/Main", (request, response) => {
+    response.render("Main", {
+        id : request.session.user
+    })
+});
+
+// Logout
+// 삭제를 시키면 id에 null 값이 됨
+DBrouter.get("/Logout", (request, response) => {
+
+    delete request.session.user;
+
+    response.render("Main", {
+        id : request.session.user
+        // session이 지워졌으니 null이다. -> main.ejs에서 로그인 유무가 확인됨  
+    })
+});
 
 module.exports = DBrouter;
