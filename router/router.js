@@ -120,12 +120,6 @@ router.post("/join", (request, response) => {
 })
 
 
-router.get('/Message', (request, response) => {
-
-    response.render("message", {});
-
-})
-
 
 
 // 현재 선언된 router를 외부에서 사용할 수 있게 선언해주는 것 

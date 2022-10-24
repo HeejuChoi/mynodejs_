@@ -16,6 +16,7 @@ Sessionrouter.get("/sessionCreate", (request, response) => {
     };
 
     // 이 마지막까지 작성해야 끝남
+    // response 해주는 주소가 있으면 안써도 됨!
     response.end();
 
 })

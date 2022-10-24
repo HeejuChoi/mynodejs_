@@ -10,7 +10,9 @@
 		<!--[if lte IE 8]><link rel="stylesheet" href="assets/css/ie8.css" /><![endif]-->
 	</head>
 	<body>
-
+		<% 
+		console.log("현재 로그인 한 사용자의 정보 : " + user)
+		%>
 		<!-- Wrapper -->
 			<div id="wrapper">
 
@@ -18,8 +20,18 @@
 					<header id="header" class="alt">
 						<a href="index.html" class="logo"><strong>Forty</strong> <span>by HTML5 UP</span></a>
 						<nav>
+							<!-- null인지를 먼저 비교해야해서 user자체가 null인지를 확인해야함 -->
+							<%if(user == null) {%>
+								<a href="#menu">로그인</a>
+							<%}else{%>
 								
-									<a href="#menu">로그인</a>
+								<!-- admin 계정만 볼 수 있는 회원정보관리 링크를 만드시오 -->
+								<%if(user.email == "admin") {%>
+									<a href="#">전체회원정보관리</a>
+								<%}%>
+
+								<a href="http://127.0.0.1:3000/MessageLogout">로그아웃</a>
+							<%}%>
 							<!-- 1. Logout라우터를 만들고 실행 후 email 세션값을 삭제시키시오. 
 							     2. 원래 Message페이지를 랜더링 하시오.-->
 						</nav>
@@ -29,19 +41,19 @@
 					<nav id="menu">	
 						<ul class="links">
 							<li><h5>로그인</h5></li>
-								<form action="" method="post">
-									<li><input type="text" placeholder="Email을 입력하세요"></li>
-									<li><input type="password" placeholder="PW를 입력하세요"></li>
+								<form action="http://127.0.0.1:3000/MessageLogin" method="post">
+									<li><input type="text" name="email" placeholder="Email을 입력하세요"></li>
+									<li><input type="password" name="pw" placeholder="PW를 입력하세요"></li>
 									<li><input type="submit" value="LogIn" class="button fit"></li>
 								</form>
 						</ul>
 						<ul class="actions vertical">
 							<li><h5>회원가입</h5></li>
-								<form action="" method="post">
-									<li><input type="text" placeholder="Email을 입력하세요"></li>
-									<li><input type="password" placeholder="PW를 입력하세요"></li>
-									<li><input type="text" placeholder="전화번호를 입력하세요"></li>
-									<li><input type="text" placeholder="집주소를 입력하세요"></li>
+								<form action="http://127.0.0.1:3000/MessageJoin" method="post">
+									<li><input type="text" name="email" placeholder="Email을 입력하세요"></li>
+									<li><input type="password" name="pw" placeholder="PW를 입력하세요"></li>
+									<li><input type="text" name="tel" placeholder="전화번호를 입력하세요"></li>
+									<li><input type="text" name="address" placeholder="집주소를 입력하세요"></li>
 									<li><input type="submit" value="JoinUs" class="button fit"></li>
 								</form>
 						</ul>
@@ -50,8 +62,11 @@
 					<section id="banner" class="major">
 						<div class="inner">
 							<header class="major">
-										<h1>로그인 한 세션아이디를 출력해주세요</h1>
-
+										<%if(user == null) {%>
+											<h1>로그인 한 세션아이디를 출력해주세요</h1>
+										<%}else{%>
+											<h1><%=user.email%>님 환영합니다 ꉂꉂ(ᵔᗜᵔ*)</h1>
+										<%}%>
 								<!-- 로그인 후 로그인 한 사용자의 세션아이디로 바꾸시오.
 									 ex)smart님 환영합니다 -->
 							</header>
@@ -170,21 +185,33 @@
 									<div class="contact-method">
 										<span class="icon alt fa-envelope"></span>
 										<h3>Email</h3>
-											<a href="#">로그인 한 사람의 이메일을 출력</a>
+											<%if(user == null) {%>
+												<span>로그인 한 사람의 이메일을 출력</span>
+											<%}else{%>
+												<span><%=user.email%></span>
+											<%}%>
 									</div>
 								</section>
 								<section>
 									<div class="contact-method">
 										<span class="icon alt fa-phone"></span>
 										<h3>Phone</h3>
+										<%if(user == null) {%>
 											<span>로그인 한 사람의 전화번호를 출력</span>
+										<%}else{%>
+											<span><%=user.tel%></span>
+										<%}%>
 									</div>
 								</section>
 								<section>
 									<div class="contact-method">
 										<span class="icon alt fa-home"></span>
 										<h3>Address</h3>
+										<%if(user == null) {%>
 											<span>로그인 한 사람의 집주소를 출력</span>
+										<%}else{%>
+											<span><%=user.address%></span>
+										<%}%>
 									</div>
 								</section>
 							</section>					
