@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1>선호도 조사 시스템</h1>
+    <hr>
+    <form action="http://127.0.0.1:3000/ex01" method="get"> 
+        <table border="1">	
+            <tr>
+                <td>이름</td>
+                <td><%=name%></td>
+            </tr>
+            <tr>
+                <td>가장 좋아하는 계절</td>
+                <td><%=season%></td>
+            </tr>		
+            <tr>
+                <!-- 버튼을 눌렀을 때 아래 주소로 이동할거다 -->
+                <a href="http://127.0.0.1:3000/ex02">
+                    <td colspan="2" ><button>세션삭제</button></td>
+                </a>
+                
+                <!-- 세션을 삭제할 수 있는 방법 3가지 -->
+                <!-- 1. a href 2. form 3. onclick -->
+            </tr>																																			
+        </table>
+    </form>
+
+</body>
+</html>
